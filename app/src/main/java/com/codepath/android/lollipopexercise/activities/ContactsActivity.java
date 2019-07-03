@@ -1,11 +1,13 @@
 package com.codepath.android.lollipopexercise.activities;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.codepath.android.lollipopexercise.R;
 import com.codepath.android.lollipopexercise.adapters.ContactsAdapter;
@@ -54,13 +56,37 @@ public class ContactsActivity extends AppCompatActivity {
         return true;
     }
 
+
+    View.OnClickListener myOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            contacts.remove(0);
+            mAdapter.notifyItemRemoved(0);
+        }
+    };
+
+
+    public void onAdd() {
+        Contact contact = Contact.getRandomContact(this);
+        contacts.add(0, contact);
+        mAdapter.notifyItemInserted(0);
+        rvContacts.scrollToPosition(0);
+        Snackbar.make(findViewById(R.id.rlMainContent), "Contact added!", Snackbar.LENGTH_LONG)
+                .setAction("Undo", myOnClickListener)
+                .show(); // Don’t forget to show!
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        return super.onOptionsItemSelected(item);
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.miAdd:
+                onAdd();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
+
+
 }
